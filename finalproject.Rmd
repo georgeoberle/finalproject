@@ -1,0 +1,173 @@
+---
+title: "finalproject"
+author: "George Oberle"
+date: "October 28, 2014"
+output: html_document
+---
+
+```{r}
+vavotes<- read.csv("~/CLIO-3/New Nation Votes data files/va-votes.tsv",
+                   sep = "\t", stringsAsFactors = FALSE)
+```
+
+# Followed directions in chapter until line 139
+
+```{r}
+library (rgdal)
+setwd("~/CLIO-3/finalproject")
+map_sp <- readOGR("nhgis-shp/", "state_1850")
+class(map_sp)
+str(map_sp, max.level = 2)
+map_sp@bbox
+map_sp@proj4string
+head(map_sp@data)
+plot(map_sp)
+earth <- readOGR("~/CLIO-3/natural_earth_vector/50m_physical/ne_50m_land/", "ne_50m_land")
+plot(earth, col = "gray")
+title("The world according to EPSG 4326")
+winkel <- spTransform(earth, CRS("+proj=wintri"))
+plot(winkel, col = "gray")
+title("The world according to Oswald Winkel")
+
+library (sp)
+class(map_sp)
+
+
+map_sp
+class(map_sp)
+str(map_sp, max.level = 2)
+map_sp@bbox
+map_sp@proj4string
+head(map_sp@data)
+plot(map_sp)
+earth <- readOGR("data/ne_50m_land/", "ne_50m_land")
+plot(earth, col = "gray")
+title("The world according to EPSG 4326")
+winkel <- spTransform(earth, CRS("+proj=wintri"))
+plot(winkel, col = "gray")
+title("The world according to Oswald Winkel")
+```
+
+
+
+
+
+
+```
+
+```{r}
+library (ggplot2)
+library (ggmap)
+geocode("San Francisco, CA")
+geocode("San Francisco, CA", output = "more")
+
+cities <- data.frame(name = c("Saint Louis, MO",
+                    "San Francisco, CA",
+                    "Boston, MA",
+                    "Charleston, SC",
+                    "Houston, TX"),
+           stringsAsFactors = FALSE)
+
+cities_geocoded <- geocode(cities$name)
+cities <- cbind(cities, cities_geocoded)
+
+library(ggplot2)
+ggplot(cities, aes(x = lon, y = lat)) +
+  geom_point() +
+  geom_text(aes(label = name), vjust = -1) +
+  coord_map()
+# why is the gis join arguement best to use?
+map_df <- fortify(map_sp, region = "GISJOIN")
+head(map_df)
+
+map_1850 <- ggplot() + 
+  geom_map(data = map_df,
+           map = map_df,
+           aes(x = long, y = lat, group = group, map_id = id),
+           fill = "white",
+           color = "black",
+           size = 0.2) +
+  coord_map() +
+  theme_minimal()
+
+map_1850
+
+
+map_1850 +
+  geom_point(data = cities, aes(x = lon, y = lat),
+             color = "red", size = 3) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = name),
+            vjust = -1)
+
+
+library(dplyr)
+
+library(historydata)
+data(paulist_missions)
+glimpse(paulist_missions)
+
+map_1850 +
+  geom_point(data = paulist_missions,
+             aes(x = long, y = lat, size = confessions),
+             color = "red", shape = 1) +
+  theme(legend.position = "bottom") +
+  scale_size(range = c(2, 8)) + 
+  ggtitle("Paulist missions as points")
+
+map_1850 +
+  geom_hex(data = paulist_missions,
+             aes(x = long, y = lat)) +
+  theme(legend.position = "bottom") +
+  ggtitle("Paulist missions with hex bin")
+
+map_1850 +
+  geom_density2d(data = paulist_missions,
+             aes(x = long, y = lat)) +
+  theme(legend.position = "bottom") +
+  ggtitle("Paulist missions with density plot")
+
+```
+
+```{r}
+library(historydata)
+data(early_colleges)
+glimpse(early_colleges)
+
+geocode 
+
+
+map_1850 +
+  geom_point(data = early_colleges,
+             aes(x = established, y = ),
+             color = "red", shape = 1) +
+  theme(legend.position = "bottom") +
+  scale_size(range = c(2, 8)) + 
+  ggtitle("Early Colleges as points")
+
+```
+
+```{r}
+library (historydata)
+data(early_colleges)
+glimpse (early_colleges)
+summarize(early_colleges, city + State)
+          %>%
+  
+
+> library(dplyr)
+> library(tidyr)
+
+
+> library(early_colleges)
+> library(stringr)
+
+            
+head(early_colleges)
+str(early_colleges)
+str(early_colleges)
+
+
+ 
+
+```
+

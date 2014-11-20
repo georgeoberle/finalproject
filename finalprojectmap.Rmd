@@ -1,0 +1,228 @@
+---
+title: "Final Project 2"
+author: "George Oberle"
+date: "November 1, 2014"
+output: html_document
+---
+
+```{r}
+
+library (sp)
+library (rgdal)
+library (rgeos)
+library (maptools)
+library (ggmap)
+library (ggplot2)
+#library (classInt) Get help
+library (RColorBrewer)
+setwd("~/CLIO-3/finalproject")
+```
+
+```{r}
+map_sp <- readOGR("nhgis-shp/", "state_1830")
+class(map_sp)
+str(map_sp, max.level = 2)
+map_sp@bbox
+map_sp@proj4string
+head(map_sp@data)
+plot(map_sp)
+#earth <- readOGR("~/CLIO-3/natural_earth_vector/50m_physical/ne_50m_land/", "ne_50m_land")
+#plot(earth, col = "gray")
+#title("The world according to EPSG 4326")
+#winkel <- spTransform(earth, CRS("+proj=wintri"))
+#plot(winkel, col = "gray")
+#title("The world according to Oswald Winkel")
+
+```
+
+```{r}
+map_df <- fortify(map_sp, region = "GISJOIN")
+head(map_df)
+map_1830 <- ggplot() + 
+  geom_map(data = map_df,
+           map = map_df,
+           aes(x = long, y = lat, group = group, map_id = id),
+           fill = "white",
+           color = "black",
+           size = 0.2) +
+  coord_map() +
+  theme_minimal()
+
+map_1830
+
+```
+
+```{r}
+#map_1830 +
+ # geom_point(data = cities, aes(x = lon, y = lat),
+  #           color = "red", size = 3) +
+  #geom_text(data = cities, aes(x = lon, y = lat, label = name),
+   #         vjust = -1)
+```
+
+```{r}
+library (dplyr)
+early_colleges <- read.csv("early-colleges.csv")
+early_colleges_geocoded <- read.csv("early_colleges_geocoded.csv")
+
+#These are the processes to use to add columns for geocoded.
+early_colleges<- early_colleges%>%
+mutate(location=paste (city, state))
+location_geocoded <- geocode(early_colleges$location)
+early_colleges_geocoded <- cbind(early_colleges, location_geocoded)
+early_colleges_geocoded
+
+map1830<- readOGR ("nhgis-shp" , "state_1830")
+map1840<- readOGR ("nhgis-shp" , "state_1840")
+
+fort<- fortify (map1830)
+fort2<- fortify (map1840)
+```
+
+
+
+```{r}
+#create period function
+periodize <- function(year) {
+  period <- NA
+  period <- ifelse(year >= 1776, "Colonial", period)
+  period <- ifelse(year >= 1776 & year <= 1828, "Early National", period)
+  period <- ifelse(year >1828, "Antebellum", period)
+  return(period)
+}
+
+
+```
+
+
+```{r}
+early_colleges_geocoded <- early_colleges_geocoded %>%
+  mutate(period = periodize(established))
+
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat), color="red") + coord_map()
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(established)) ) + coord_map()
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(period)) ) + coord_map()
+ 
+m <- ggplot(data, aes(x=Organization))
+m + geom_histogram()
+
+l <- ggplot(early_colleges_geocoded, aes(x=state))
+l + geom_histogram()
+
+
+
+                                                                                                                                                                  
+```
+
+```{r}
+
+early_colleges_geocoded <- early_colleges_geocoded %>%
+  mutate(period = periodize(established))
+
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes(x=lon, y=lat, shape=period), color="red") + coord_map()
+
+#How can I combine these 2
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_learned_geocoded, aes (x=lon, y=lat), color="blue") + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(established)) ) + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(period)) ) + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=early_colleges_geocoded, size=4, aes (x=lon, y=lat, color=factor(period)) ) + coord_map()
+
+#This is the better one for colleges.
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=early_colleges_geocoded, size=4, aes (x=lon, y=lat, color=factor(period), shape=factor(period)) ) + coord_map()
+
+
+```
+
+
+
+```{r}
+early_learned <- read.csv("Scholarly Societies.csv")
+early_colleges_geocoded <- read.csv("early_colleges_geocoded.csv")
+
+
+#These are the processes to use to add columns for geocoded.
+early_learned<- early_learned%>%
+mutate(location=paste (City, State))
+location_geocoded <- geocode(early_learned$location)
+early_learned_geocoded <- cbind(early_learned, location_geocoded)
+early_learned_geocoded
+
+map1830<- readOGR ("nhgis-shp" , "state_1830")
+fort<- fortify (map1830)
+
+#mutate(decade = round_year(early_colleges_geocoded, $Birth.year))%>%
+
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_learned_geocoded, aes (x=lon, y=lat), color="red") + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="light grey") +geom_point(data=early_learned_geocoded, size= 3, aes (x=lon, y=lat), color="blue") + coord_map()
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_learned_geocoded, aes (x=lon, y=lat, color=factor(Date.Established)) ) + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=early_learned_geocoded, size=3, aes (x=lon, y=lat, color=factor(Date.Established)) ) + coord_map()
+
+
+n <- ggplot(early_learned_geocoded, aes(x=State))
+n + geom_histogram()
+
+t <- ggplot(early_learned_geocoded, aes(x=Date.Established))
+t + geom_histogram()
+t + geom_histogram(binwidth = 2)
+
+p <- ggplot(early_learned_geocoded, aes(Date.Established, State))
+p + geom_point()
+
+
+c <- ggplot(early_learned_geocoded, aes(factor(State)))
+
+# By default, uses stat="bin", which gives the count in each category
+c + geom_bar()
+c + geom_bar(width=.5)
+c + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
+c + geom_bar(fill="white", colour="darkgreen")
+
+
+```
+
+```{r}
+#APS Year Elected
+dataaps <-read.csv("~/CLIO-3/apsmembership.csv")
+a <- ggplot(dataaps, aes(x=Year.Elected))
+a + geom_histogram()
+
+#APS Resident and International Members
+a <- ggplot(dataaps, aes(factor(Residency)))
+a + geom_bar()
+a + geom_bar(width=.5)
+a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
+a + geom_bar(fill="white", colour="darkgreen")
+
+```
+
+
+
+```{r}
+#early_learned_geocoded %>%
+  #filter(Type.of.Society == "Universal Science") %>%
+ # ggplot(aes(x = Date.Established, y = n)) + geom_bar() + ggtitle("Universal Science")
+
+
+#library(ggplot2)
+#early_learned_geocoded %>%
+#  ggplot(aes(x = Date.Established, y = State)) + geom_point() + ggtitle#("Learned Societies")
+
+#early_learned_geocoded %>%
+#  filter(Type.of.Society == "Universal Science") %>%
+#  ggplot(aes(x = Date.Established, y = n)) + geom_path() + ggtitle("Universal Science")
+
+```
+
+
+

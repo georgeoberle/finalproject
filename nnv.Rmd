@@ -1,0 +1,81 @@
+---
+title: "NNV"
+author: "George Oberle"
+date: "November 12, 2014"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(stringr)
+library(ggplot2)
+datannv = read.csv("all-votes.csv", stringsAsFactors = FALSE) %>%
+  tbl_df()
+```
+
+```{r}
+datannv %>%
+  filter(Office_Scope =="Federal") %>%
+  mutate(year = str_extract(Date, "\\d{4}"))%>%
+  group_by(Affiliation, State, year) %>%
+  summarize(count = n()) 
+```
+
+```{r}
+datannv %>%
+  filter(id == "al.1.U.S.congress.1825") %>% View()
+#   select(id, Name, Vote)
+```
+
+```{r}
+datannv %>%
+  filter (Affiliation =="Federalist") %>%
+  View()
+```
+
+
+```{r}
+datannv %>%
+  group_by(id, Iteration, Name.ID) %>%
+  summarize(total_vote = sum(Vote, na.rm=TRUE)) %>%
+  mutate(rank = rank(-total_vote, na.last = "keep")) %>%
+  filter (rank==1) %>% 
+  left_join(datannv) %>%
+  distinct() %>%
+  arrange(id) %>%
+  write.csv(datannv, file = "datannv.csv")
+#Error in ifelse(append, "a", "w") : 
+  #(list) object cannot be coerced to type 'logical'
+View
+
+```
+
+```{r}
+data = read.csv("~/CLIO-3/finalproject/nnvdatawin.csv")
+sdata<-select (data, Name, Affiliation, Date, Office_Scope, total_vote, State)
+filter (data, Date == 1800)
+filter (data, Affiliation == "Federalist")
+View (sdata)
+
+
+m <-ggplot(sdata, aes (Affiliation))
+m + geom_histogram()
+#m + geom_histogram(aes(y = State )) + geom_density()
+
+c <- ggplot(sdata, aes(factor(Date)))
+c + geom_bar()
+c + geom_bar(width=.5)
+c + geom_bar() + coord_flip()
+c + geom_bar(fill="white", colour="darkgreen")
+
+
+p <- ggplot(sdata, aes(factor(Date), State))
+
+p + geom_point()
+
+p + geom_boxplot()
+qplot(factor(cyl), mpg, data = mtcars, geom = "boxplot")
+
+
+```
+

@@ -1,0 +1,102 @@
+---
+title: "plots"
+author: "George Oberle"
+date: "November 8, 2014"
+output: html_document
+---
+
+```{r}
+data1 = read.csv("early_colleges_geocoded.csv")
+
+
+# Simple examples
+qplot(period, data=data1, geom="histogram")
+qplot(state, data=data1, geom= "histogram")
+qplot(state, data=data1, geom="line", )
+
+ggplot(data=data1, aes(x=period, y=college)) + geom_bar(stat="")
+
+geom_bar(data = data1, stat = "bin", position = "stack", )
+
+c <- ggplot(data1, aes(factor(period)))
+
+c + geom_bar()
+c + geom_bar(width=.5)
+c + geom_bar() + coord_flip()
+c + geom_bar(fill="white", colour="darkgreen")
+
+
+
+qplot(factor(period), data=data1, geom="bar")
+data1$period  <- factor(data1$period, levels = c("Colonial", "Early National", "Antebellum"))
+qplot(factor(period), data=data1, geom="bar", fill=period)
+
+#sectarian and secular colleges
+qplot (factor(type), data=data1, geom="bar" , fill=factor(period))
+qplot(factor(type), period, data = data1, geom = "boxplot")
+
+qplot(factor(period), data=data1, geom="bar", fill=factor(state))
+
+
+p <- ggplot(data1, aes(factor(period), state))
+p + geom_boxplot()
+qplot(factor(period), state, data = data1, geom = "boxplot")
+
+p
+
+ggplot(period, data=data1, geom= "line")
+
+qplot(period, data=data1, geom= "histogram")
+qplot(period, data=data1, geom= "line")
+
+ggplot(data=data1, aes(x=period, fill=college) geom= "histogram") 
+geom_line(mapping = NULL, data = data1, stat = "college", position = "", 
+  ...)
+
++ geom_density(alpha=0.5)
+ggplot(data=diamonds, aes(x=carat, colour=clarity)) + geom_freqpoly()
+```
+
+```{r}
+
+p <- ggplot(data1, aes(state, period)) p + geom_point()
+
+qplot(college, data=data1, weight=n, geom="histogram") 
+p <- qplot(state, data=data1, geom= "line")
+p
+
+qplot(state, period, data=data1, geom="line")
+
+
+qplot(period, state, stat="bin", data=data1, geom="histogram") 
+
+
+
+qplot(date, pop, data=data1, geom="line")
+(p+)
+
+
+      
+      color=, shape=, size=, alpha=, geom=, method=, formula=, facets=, xlim=, ylim= xlab=, ylab=, main=, sub=) 
+
+
+
+
+```
+
+```{r}
+datannv = read.csv("all-votes.csv")
+office<- select (datannv, State, Date, Office, Office_Scope, Name)
+filter (office, Office_Scope == Federal)
+test<-filter (office, Office_Scope == Federal)
+office_scope<-select (datannv, Office_Scope)
+affiliation<-select (datannv, Affiliation)
+date<-select(datannv, Date)
+
+```
+
+```{r}
+library(dplyr)
+datannv
+```
+

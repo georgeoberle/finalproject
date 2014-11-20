@@ -1,0 +1,87 @@
+---
+title: "network final project"
+author: "George Oberle"
+date: "November 4, 2014"
+output: html_document
+---
+```{r}
+library (dplyr)
+library (ggmap)
+library (ggplot2)
+library (igraph)
+data = read.csv("~/CLIO-3/finalproject/networtest.csv")
+# data
+```
+
+
+```{r}
+data_g <- graph.data.frame(data, directed = FALSE)
+plot (data_g, vertex.label = NA)
+```
+
+```{r}
+V(data_g)
+bipartite.mapping(data_g)
+V(data_g)$type <- bipartite.mapping(data_g)$type
+is.bipartite(data_g)
+plot(data_g, layout = layout.bipartite, vertex.label = NA)
+title("A bipartite layout of National University Societies")
+```
+
+```{r}
+#This takes a long time only do this when you have time.
+bipartite <- bipartite.projection(data_g)
+#str(bipartite)
+#plot(bipartite$proj1, vertex.label = NA)
+#title("Just the people in the Columbian College network")
+#check with Lincoln. Not really working.
+
+```
+
+```{r}
+plot(bipartite$proj2)
+title("Just the Columbian College Network")
+
+```
+
+```{r}
+E(bipartite$proj2)
+E(bipartite$proj2)$weight
+
+plot(bipartite$proj2, edge.width = E(bipartite$proj2)$weight)
+title("Fraternal Organizations Weighted by Shared Membership")
+```
+
+```{r}
+plot(bipartite$proj2, edge.width = E(bipartite$proj2)$weight,
+     layout = layout.fruchterman.reingold(bipartite$proj2, 
+                                          weights = E(bipartite$proj2)$weight),
+     vertex.label.dist = 1)
+title("Fraternal organizations weighted by shared membership")
+```
+
+```{r}
+plot(bipartite$proj2, edge.width = E(bipartite$proj2)$weight,
+     layout = layout.fruchterman.reingold.grid (bipartite$proj2, 
+                                          weights = E(bipartite$proj2)$weight),
+     vertex.label.dist = 1.5)
+title("Fraternal organizations weighted by shared membership")
+
+
+```
+
+```{r}
+plot(bipartite$proj2, edge.width = E(bipartite$proj2)$weight,
+     layout = layout.reingold.tilford(bipartite$proj2, 
+                                          weights = E(bipartite$proj1)$weight),
+     vertex.label.dist = 2.5) 
+
+```
+
+```{r}
+plot(bipartite$proj2, edge.width = E(bipartite$proj2)$weight,
+     layout = layout.fruchterman.reingold.grid (bipartite$proj2, weights = E(bipartite$proj2)$weight), vertex.label.dist = 1)
+title("Fraternal organizations weighted by shared membership")
+
+```
+
