@@ -31,10 +31,10 @@ title("A bipartite layout of National University Societies")
 ```{r}
 #This takes a long time only do this when you have time.
 bipartite <- bipartite.projection(data_g)
-#str(bipartite)
-#plot(bipartite$proj1, vertex.label = NA)
-#title("Just the people in the Columbian College network")
-#check with Lincoln. Not really working.
+str(bipartite)
+plot(bipartite$proj1, vertex.label = NA)
+title("Just the people in the Columbian College network")
+check with Lincoln. Not really working.
 
 ```
 
