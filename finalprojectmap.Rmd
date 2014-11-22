@@ -96,8 +96,8 @@ periodize <- function(year) {
 
 
 ```{r}
-early_colleges_geocoded <- early_colleges_geocoded %>%
-  mutate(period = periodize(established))
+#early_colleges_geocoded <- early_colleges_geocoded %>%
+ # mutate(period = periodize(established))
 
 
 ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat), color="red") + coord_map()
@@ -112,15 +112,13 @@ m + geom_histogram()
 l <- ggplot(early_colleges_geocoded, aes(x=state))
 l + geom_histogram()
 
-
-
-                                                                                                                                                                  
+                                                                                                                                                               
 ```
 
 ```{r}
 
-early_colleges_geocoded <- early_colleges_geocoded %>%
-  mutate(period = periodize(established))
+#early_colleges_geocoded <- early_colleges_geocoded %>%
+  #mutate(period = periodize(established))
 
 
 ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes(x=lon, y=lat, shape=period), color="red") + coord_map()
@@ -168,9 +166,9 @@ ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id
 
 ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=early_learned_geocoded, size=3, aes (x=lon, y=lat, color=factor(Date.Established)) ) + coord_map()
 
-
+#Histogram of Total Learned Societies Established 1768-1828 by state.
 n <- ggplot(early_learned_geocoded, aes(x=State))
-n + geom_histogram()
+n + geom_histogram() + ggtitle("Learned Societies Established 1768-1828") + ylab("Total Established")
 
 t <- ggplot(early_learned_geocoded, aes(x=Date.Established))
 t + geom_histogram()
