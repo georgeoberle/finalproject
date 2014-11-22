@@ -212,6 +212,13 @@ a + geom_bar(fill="white", colour="darkgreen")
 
 ```
 
+```{r}
+networkdata = read.csv("~/CLIO-3/finalproject/networtest.csv")
+net <- ggplot(networkdata, aes(x=Organization))
+net + geom_histogram() + theme(axis.text.x = element_text(face = "bold", angle = 60, hjust = 1, size = 8))+
+  ggtitle("Size of Learned Societies Connected to National University") + ylab("Total Members")
+
+```
 
 
 
