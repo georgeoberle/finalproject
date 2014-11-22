@@ -166,16 +166,24 @@ ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id
 
 ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=early_learned_geocoded, size=3, aes (x=lon, y=lat, color=factor(Date.Established)) ) + coord_map()
 
-#Histogram of Total Learned Societies Established 1768-1828 by state.
+#Histogram of Total Learned Societies Established 1768-1848 by state.
 n <- ggplot(early_learned_geocoded, aes(x=State))
-n + geom_histogram() + ggtitle("Learned Societies Established 1768-1828") + ylab("Total Established")
+n + geom_histogram() + ggtitle("Learned Societies Established 1768-1848") + ylab("Total Established")
+
+type <- ggplot(early_learned_geocoded, aes (x=Type.of.Society))
+type+ geom_histogram()+ggtitle("Learned Societies by Type") + ylab("Total Established") + xlab ("Type of Society")
+
+
+
+
 
 t <- ggplot(early_learned_geocoded, aes(x=Date.Established))
 t + geom_histogram()
-t + geom_histogram(binwidth = 2)
+t + geom_histogram(binwidth = 3)
 
 p <- ggplot(early_learned_geocoded, aes(Date.Established, State))
 p + geom_point()
+
 
 
 c <- ggplot(early_learned_geocoded, aes(factor(State)))
@@ -203,6 +211,7 @@ a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
 a + geom_bar(fill="white", colour="darkgreen")
 
 ```
+
 
 
 
