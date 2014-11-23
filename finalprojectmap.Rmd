@@ -13,7 +13,8 @@ library (rgeos)
 library (maptools)
 library (ggmap)
 library (ggplot2)
-#library (classInt) Get help
+library (dplyr)
+#library (classInt) 
 library (RColorBrewer)
 setwd("~/CLIO-3/finalproject")
 ```
@@ -218,12 +219,10 @@ net + geom_histogram() + theme(axis.text.x = element_text(face = "bold", angle =
 
 ```{r}
 socdata = read.csv ("~/CLIO-3/finalproject/APSAAAScombined.csv")
-
 year <- ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization)))
 year + geom_histogram() 
 
-qplot(factor(cyl), data=mtcars, geom="bar", fill=factor(vs))
-qplot(factor(cyl), data=mtcars, geom="bar", fill=factor(gear))
+
 
 
 ```

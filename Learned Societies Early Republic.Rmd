@@ -1,0 +1,111 @@
+---
+title: "Learned Societies in the Early Republic"
+author: "George Oberle"
+date: "November 23, 2014"
+output: html_document
+---
+
+```{r}
+#Set tools
+library (sp)
+library (rgdal)
+library (rgeos)
+library (maptools)
+library (ggmap)
+library (ggplot2)
+library (mullenMisc)
+library (magittr)
+library (stringr)
+library (dplyr)
+#library (classInt) Get help
+library (RColorBrewer)
+library (igraph)
+setwd("~/CLIO-3/finalproject")
+```
+
+```{r}
+#This is helpful showing the annual membership of the APS and the AAAS. It shows patterns of growth of the members.
+socdata = read.csv ("~/CLIO-3/finalproject/APSAAAScombined.csv")
+
+year <- ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization)))
+year + geom_histogram() +
+ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected")
+
+#Density-I am not sure if this is a helpful visualization. 
+ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization))) + geom_density()
+
+```
+
+```{r}
+data_g <- graph.data.frame(socdata, directed = FALSE)
+plot (data_g, vertex.label = NA)
+
+V(data_g)
+bipartite.mapping(data_g)
+V(data_g)$type <- bipartite.mapping(data_g)$type
+is.bipartite(data_g)
+plot(data_g, layout = layout.bipartite, vertex.label = NA)
+title("A bipartite layout of the APS and AAAS")
+
+bipartite <- bipartite.projection(data_g)
+str(bipartite)
+plot(bipartite$proj1, vertex.label = NA)
+title("Just the people in the Columbian College network")
+
+plot(bipartite$proj2)
+title("AAAS and APS")
+
+E(bipartite$proj2)
+E(bipartite$proj2)$weight
+
+plot(bipartite$proj2, edge.width = E(bipartite$proj2)$weight)
+```
+
+```{r}
+schol_soc <- read.csv("~/CLIO-3/finalproject/Scholarly Societies.csv")       
+schol_soc<- schol_soc%>%
+mutate(location=paste (City, State))
+location_geocoded <- geocode(schol_soc$location)
+schol_soc_geocoded <- cbind(schol_soc, location_geocoded)
+schol_soc_geocoded
+
+map_sp <- readOGR("nhgis-shp/", "state_1830")
+class(map_sp)
+str(map_sp, max.level = 2)
+map_sp@bbox
+map_sp@proj4string
+head(map_sp@data)
+plot(map_sp)
+
+map1830<- readOGR ("nhgis-shp" , "state_1830")
+map1840<- readOGR ("nhgis-shp" , "state_1840")
+
+fort<- fortify (map1830)
+fort2<- fortify (map1840)
+
+```
+
+
+```{r}
+#Maps of Learned Societies
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=schol_soc_geocoded, aes (x=lon, y=lat), color="red") + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="light grey") +geom_point(data=schol_soc_geocoded, size= 3, aes (x=lon, y=lat), color="blue") + coord_map()
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=schol_soc_geocoded, aes (x=lon, y=lat, color=factor(Date.Established)) ) + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=schol_soc_geocoded, size=3, aes (x=lon, y=lat, color=factor(Type.of.Society)) ) + coord_map()
+
+```
+
+```{r}
+#Histogram of Total Learned Societies Established 1768-1848 by state.
+n <- ggplot(schol_soc_geocoded, aes(x=State))
+n + geom_histogram() + ggtitle("Learned Societies Established 1768-1848") + ylab("Total Established")
+
+type <- ggplot(schol_soc_geocoded, aes (x=Type.of.Society))
+type+ geom_histogram() + theme(axis.text.x = element_text(face = "bold", angle = 60, hjust = 1, size = 8)) +ggtitle("Learned Societies by Type") + ylab("Total Established") + xlab ("Type of Society")
+```
+```
+
