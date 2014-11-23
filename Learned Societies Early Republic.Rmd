@@ -14,7 +14,7 @@ library (maptools)
 library (ggmap)
 library (ggplot2)
 library (mullenMisc)
-library (magittr)
+library (magrittr)
 library (stringr)
 library (dplyr)
 #library (classInt) Get help
@@ -50,7 +50,7 @@ title("A bipartite layout of the APS and AAAS")
 bipartite <- bipartite.projection(data_g)
 str(bipartite)
 plot(bipartite$proj1, vertex.label = NA)
-title("Just the people in the Columbian College network")
+title("Just the people in the network")
 
 plot(bipartite$proj2)
 title("AAAS and APS")
@@ -60,6 +60,46 @@ E(bipartite$proj2)$weight
 
 plot(bipartite$proj2, edge.width = E(bipartite$proj2)$weight)
 ```
+
+```{r}
+data = read.csv("~/CLIO-3/finalproject/learnedmembersnetwork.csv")
+
+data_h <- graph.data.frame(data, directed = FALSE)
+plot (data_h, vertex.label = NA)
+
+V(data_h)
+bipartite.mapping(data_h)
+V(data_h)$type <- bipartite.mapping(data_h)$type
+is.bipartite(data_h)
+plot(data_h, layout = layout.bipartite, vertex.label = NA)
+title("A bipartite layout of National University Societies")
+
+bipartite_full <- bipartite.projection(data_h)
+str(bipartite_full)
+#Error in nchar(vn) : invalid multibyte string 69
+plot(bipartite$proj1, vertex.label = NA)
+title("Just the people in the Columbian College network")
+check with Lincoln. Not really working.
+
+plot(bipartite_full$proj2)
+title("Just the Columbian College Network")
+
+E(bipartite_full$proj2)
+E(bipartite_full$proj2)$weight
+
+plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight)
+title("Fraternal Organizations Weighted by Shared Membership")
+
+plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight,
+     layout = layout.fruchterman.reingold(bipartite_full$proj2, 
+                                          weights = E(bipartite_full$proj2)$weight),
+     vertex.label.dist = 1)
+title("Fraternal organizations weighted by shared membership")
+```
+
+
+
+
 
 ```{r}
 schol_soc <- read.csv("~/CLIO-3/finalproject/Scholarly Societies.csv")       
