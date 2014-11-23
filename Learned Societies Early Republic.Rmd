@@ -27,7 +27,7 @@ setwd("~/CLIO-3/finalproject")
 #This is helpful showing the annual membership of the APS and the AAAS. It shows patterns of growth of the members.
 socdata = read.csv ("~/CLIO-3/finalproject/APSAAAScombined.csv")
 
-year <- ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization)))
+year <- ggplot(socdata, aes(x=Year.Elected, fill= Organization ))
 year + geom_histogram() +
 ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected")
 
