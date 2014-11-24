@@ -68,6 +68,7 @@ data = read.csv("~/CLIO-3/finalproject/learnedmembersnetwork.csv")
 
 data_h <- graph.data.frame(data, directed = FALSE)
 plot (data_h, vertex.label = NA)
+title("A Network Graph of the Societies Involved in the National University")
 
 V(data_h)
 bipartite.mapping(data_h)
@@ -97,9 +98,53 @@ plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight,
                                           weights = E(bipartite_full$proj2)$weight),
      vertex.label.dist = 1)
 title("Fraternal organizations weighted by shared membership")
+
+#Would it be useful to show the APS and AAAS as a root?
+plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight,
+     layout.reingold.tilford()
+title("APS Root")
 ```
 
 
+```{r}
+## S3 method for class 'communities'
+print(bipartite_full)
+
+## S3 method for class 'communities'
+length(bipartite_full)
+sizes(bipartite_full)
+membership(communities)
+## S3 method for class 'communities'
+modularity(socdata, )
+algorithm(communities)
+crossing(communities, graph)
+
+is.hierarchical(communities, full = FALSE)
+merges(communities)
+cutat(communities, no, steps)
+## S3 method for class 'communities'
+as.dendrogram(object, hang=-1,
+   use.modularity=FALSE, ...)
+## S3 method for class 'communities'
+as.hclust(x, hang = -1,
+   use.modularity = FALSE, ...)
+## S3 method for class 'communities'
+asPhylo(x, use.modularity=FALSE, ...)
+showtrace(communities)
+
+code.length(communities)
+
+## S3 method for class 'communities'
+plot(x, y,
+   colbar=rainbow(length(x)),
+   col=colbar[membership(x)],
+   mark.groups=communities(x),
+   edge.color=c("black", "red")[crossing(x,y)+1],
+   ...)
+
+create.communities(membership, algorithm = NULL, merges = NULL,
+                   modularity = NULL, ...)
+```
 
 
 
