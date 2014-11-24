@@ -37,6 +37,7 @@ ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization))) + geom_density()
 ```
 
 ```{r}
+#This doesn't really help with what I am looking for. What I really want is the numbers of common members of the APS and AAAS
 data_g <- graph.data.frame(socdata, directed = FALSE)
 plot (data_g, vertex.label = NA)
 
@@ -62,6 +63,7 @@ plot(bipartite$proj2, edge.width = E(bipartite$proj2)$weight)
 ```
 
 ```{r}
+#This shows my full networks.
 data = read.csv("~/CLIO-3/finalproject/learnedmembersnetwork.csv")
 
 data_h <- graph.data.frame(data, directed = FALSE)
@@ -109,6 +111,7 @@ location_geocoded <- geocode(schol_soc$location)
 schol_soc_geocoded <- cbind(schol_soc, location_geocoded)
 schol_soc_geocoded
 
+#Needed steps to get 1830 and 1840 maps ready
 map_sp <- readOGR("nhgis-shp/", "state_1830")
 class(map_sp)
 str(map_sp, max.level = 2)
@@ -116,6 +119,7 @@ map_sp@bbox
 map_sp@proj4string
 head(map_sp@data)
 plot(map_sp)
+
 
 map1830<- readOGR ("nhgis-shp" , "state_1830")
 map1840<- readOGR ("nhgis-shp" , "state_1840")
@@ -143,6 +147,8 @@ ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_
 #Histogram of Total Learned Societies Established 1768-1848 by state.
 n <- ggplot(schol_soc_geocoded, aes(x=State))
 n + geom_histogram() + ggtitle("Learned Societies Established 1768-1848") + ylab("Total Established")
+
+#Create a graph of those Cesation.of.Society
 
 type <- ggplot(schol_soc_geocoded, aes (x=Type.of.Society))
 type+ geom_histogram() + theme(axis.text.x = element_text(face = "bold", angle = 60, hjust = 1, size = 8)) +ggtitle("Learned Societies by Type") + ylab("Total Established") + xlab ("Type of Society")
