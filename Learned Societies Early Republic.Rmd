@@ -36,12 +36,20 @@ a <- ggplot(dataaps, aes(x=Year.Elected))
 a + geom_histogram()
 
 #APS Resident and International Members
+a <- ggplot(dataaps, aes(Residency))
+a + geom_bar()
+a + geom_bar(width=.5)
+a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
+#a + geom_bar(fill="white", colour="darkgreen")
+
 a <- ggplot(dataaps, aes(x=Year.Elected, fill=Residency))
 a + geom_bar(position = "dodge", binwidth = 1)
 # adjust width not needed for this one. Also adjusts other aethetics. Not needed.
 #a + geom_bar(width=.5)
 #a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
 #a + geom_bar(fill="white", colour="darkgreen")
+
+
 
 #Density-I am not sure if this is a helpful visualization. 
 #ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization))) + geom_density()
@@ -113,7 +121,7 @@ plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight,
      layout = layout.fruchterman.reingold(bipartite_full$proj2, 
                                           weights = E(bipartite_full$proj2)$weight),
      vertex.label.dist = 1)
-title("Fraternal organizations weighted by shared membership")
+title("National University Organizations Weighted by Shared Membership")
 
 #Would it be useful to show the APS and AAAS as a root?
 plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight,
