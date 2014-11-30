@@ -132,6 +132,7 @@ title("APS Root")
 
 
 ```{r}
+#Maps-Scholarly Societies Begin
 schol_soc <- read.csv("~/CLIO-3/finalproject/Scholarly Societies.csv")       
 schol_soc<- schol_soc%>%
 mutate(location=paste (City, State))
@@ -139,6 +140,9 @@ location_geocoded <- geocode(schol_soc$location)
 schol_soc_geocoded <- cbind(schol_soc, location_geocoded)
 schol_soc_geocoded
 
+schol_soc_geocoded <-
+
+stocks %>% gather(stock, price, -time)
 #Needed steps to get 1830 and 1840 maps ready
 map_sp <- readOGR("nhgis-shp/", "state_1830")
 class(map_sp)
@@ -167,7 +171,7 @@ ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_
 
 ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=schol_soc_geocoded, aes (x=lon, y=lat, color=factor(Date.Established)) ) + coord_map()
 
-ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=schol_soc_geocoded, size=3, aes (x=lon, y=lat, color=Type.of.Society) ) + coord_map()
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=schol_soc_geocoded, size=3, aes (x=lon, y=lat, color=Society) ) + coord_map()
 
 ```
 
@@ -202,6 +206,35 @@ u + geom_histogram() + ggtitle ("Learned Socities Established by State 1768-1848
 ```
 
 ```{r}
+#early_colleges_geocoded <- early_colleges_geocoded %>%
+ # mutate(period = periodize(established))
 
+early_colleges_geocoded <- read.csv("early_colleges_geocoded.csv")
+
+#Early Colleges on 1830 Map
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat), color="red") + coord_map()
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(established)) ) + coord_map()
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(period)) ) + coord_map()
+
+#Early Colleges on 1840 map
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat), color="red") + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(established)) ) + coord_map()
+
+#This is the better one for colleges.
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=early_colleges_geocoded, size=4, aes (x=lon, y=lat, color=period, shape=period) ) + coord_map() +ggtitle ('Early American Colleges by Period')
+
+
+ggtitle(Early American Colleges by Period)
+
+m <- ggplot(networkdata, aes(x=Organization))
+m + geom_histogram()
+
+l <- ggplot(early_colleges_geocoded, aes(x=state))
+l + geom_histogram()
+
+                              
 ```
 
