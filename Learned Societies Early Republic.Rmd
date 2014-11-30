@@ -38,15 +38,13 @@ a + geom_histogram()
 #APS Resident and International Members
 a <- ggplot(dataaps, aes(x=Year.Elected, fill=Residency))
 a + geom_bar(position = "dodge", binwidth = 1)
-a + geom_bar(width=.5)
-
-
-a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
-a + geom_bar(fill="white", colour="darkgreen")
-
+# adjust width not needed for this one. Also adjusts other aethetics. Not needed.
+#a + geom_bar(width=.5)
+#a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
+#a + geom_bar(fill="white", colour="darkgreen")
 
 #Density-I am not sure if this is a helpful visualization. 
-ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization))) + geom_density()
+#ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization))) + geom_density()
 
 ```
 
@@ -58,6 +56,7 @@ ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization))) + geom_density()
 data_g <- graph.data.frame(socdata, directed = FALSE)
 plot (data_g, vertex.label = NA)
 
+#Bipartite map of APS and AAAS
 V(data_g)
 bipartite.mapping(data_g)
 V(data_g)$type <- bipartite.mapping(data_g)$type
@@ -164,14 +163,37 @@ ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_
 
 ```
 
+
+
+
 ```{r}
+#data scholarly societies and colleges geocoded
+early_learned <- read.csv("Scholarly Societies.csv")
+early_colleges_geocoded <- read.csv("early_colleges_geocoded.csv")
+
+#These are the processes to use to add columns for geocoded.
+early_learned<- early_learned%>%
+mutate(location=paste (City, State))
+location_geocoded <- geocode(early_learned$location)
+early_learned_geocoded <- cbind(early_learned, location_geocoded)
+early_learned_geocoded
+#How do I save this to the file?
+
 #Histogram of Total Learned Societies Established 1768-1848 by state.
-n <- ggplot(schol_soc_geocoded, aes(x=State))
-n + geom_histogram() + ggtitle("Learned Societies Established 1768-1848") + ylab("Total Established")
+#Date Established for Early Learned Societies
+t <- ggplot(early_learned_geocoded, aes(x=Date.Established))
+t + geom_histogram()
+t + geom_histogram(binwidth = 3)
+
+u <- ggplot (early_learned_geocoded, aes(x=State))
+u + geom_histogram()
+u + geom_histogram() + ggtitle ("Learned Socities Established by State 1768-1848")+ ylab ("Total Established")
 
 #Create a graph of those Cesation.of.Society
 
-
 ```
 
+```{r}
+
+```
 
