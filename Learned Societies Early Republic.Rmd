@@ -28,13 +28,30 @@ setwd("~/CLIO-3/finalproject")
 socdata = read.csv ("~/CLIO-3/finalproject/APSAAAScombined.csv")
 
 year <- ggplot(socdata, aes(x=Year.Elected, fill= Organization ))
-year + geom_histogram() +
+year + geom_histogram(position = "dodge", binwidth = 1) +
 ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected")
+
+dataaps <-read.csv("~/CLIO-3/apsmembership.csv")
+a <- ggplot(dataaps, aes(x=Year.Elected))
+a + geom_histogram()
+
+#APS Resident and International Members
+a <- ggplot(dataaps, aes(x=Year.Elected, fill=Residency))
+a + geom_bar(position = "dodge", binwidth = 1)
+a + geom_bar(width=.5)
+
+
+a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
+a + geom_bar(fill="white", colour="darkgreen")
+
 
 #Density-I am not sure if this is a helpful visualization. 
 ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization))) + geom_density()
 
 ```
+
+
+
 
 ```{r}
 #This doesn't really help with what I am looking for. What I really want is the numbers of common members of the APS and AAAS
@@ -85,7 +102,7 @@ title("Just the people in the Columbian College network")
 check with Lincoln. Not really working.
 
 plot(bipartite_full$proj2)
-title("Just the Columbian College Network")
+title("The Columbian College Network")
 
 E(bipartite_full$proj2)
 E(bipartite_full$proj2)$weight
@@ -103,47 +120,6 @@ title("Fraternal organizations weighted by shared membership")
 plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight,
      layout.reingold.tilford()
 title("APS Root")
-```
-
-
-```{r}
-## S3 method for class 'communities'
-print(bipartite_full)
-
-## S3 method for class 'communities'
-length(bipartite_full)
-sizes(bipartite_full)
-membership(communities)
-## S3 method for class 'communities'
-modularity(socdata, )
-algorithm(communities)
-crossing(communities, graph)
-
-is.hierarchical(communities, full = FALSE)
-merges(communities)
-cutat(communities, no, steps)
-## S3 method for class 'communities'
-as.dendrogram(object, hang=-1,
-   use.modularity=FALSE, ...)
-## S3 method for class 'communities'
-as.hclust(x, hang = -1,
-   use.modularity = FALSE, ...)
-## S3 method for class 'communities'
-asPhylo(x, use.modularity=FALSE, ...)
-showtrace(communities)
-
-code.length(communities)
-
-## S3 method for class 'communities'
-plot(x, y,
-   colbar=rainbow(length(x)),
-   col=colbar[membership(x)],
-   mark.groups=communities(x),
-   edge.color=c("black", "red")[crossing(x,y)+1],
-   ...)
-
-create.communities(membership, algorithm = NULL, merges = NULL,
-                   modularity = NULL, ...)
 ```
 
 
@@ -184,7 +160,7 @@ ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_
 
 ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=schol_soc_geocoded, aes (x=lon, y=lat, color=factor(Date.Established)) ) + coord_map()
 
-ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=schol_soc_geocoded, size=3, aes (x=lon, y=lat, color=factor(Type.of.Society)) ) + coord_map()
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=schol_soc_geocoded, size=3, aes (x=lon, y=lat, color=Type.of.Society) ) + coord_map()
 
 ```
 
@@ -195,8 +171,7 @@ n + geom_histogram() + ggtitle("Learned Societies Established 1768-1848") + ylab
 
 #Create a graph of those Cesation.of.Society
 
-type <- ggplot(schol_soc_geocoded, aes (x=Type.of.Society))
-type+ geom_histogram() + theme(axis.text.x = element_text(face = "bold", angle = 60, hjust = 1, size = 8)) +ggtitle("Learned Societies by Type") + ylab("Total Established") + xlab ("Type of Society")
+
 ```
-```
+
 
