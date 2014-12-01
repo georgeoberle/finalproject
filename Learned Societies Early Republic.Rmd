@@ -140,9 +140,7 @@ location_geocoded <- geocode(schol_soc$location)
 schol_soc_geocoded <- cbind(schol_soc, location_geocoded)
 schol_soc_geocoded
 
-schol_soc_geocoded <-
 
-stocks %>% gather(stock, price, -time)
 #Needed steps to get 1830 and 1840 maps ready
 map_sp <- readOGR("nhgis-shp/", "state_1830")
 class(map_sp)
@@ -171,7 +169,7 @@ ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_
 
 ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=schol_soc_geocoded, aes (x=lon, y=lat, color=factor(Date.Established)) ) + coord_map()
 
-ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=schol_soc_geocoded, size=3, aes (x=lon, y=lat, color=Society) ) + coord_map()
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=schol_soc_geocoded, size=3, aes (x=lon, y=lat, color=Society) ) + coord_map() +ggtitle('Early American Learned Societies by Type')
 
 ```
 
@@ -201,7 +199,20 @@ u <- ggplot (early_learned_geocoded, aes(x=State))
 u + geom_histogram()
 u + geom_histogram() + ggtitle ("Learned Socities Established by State 1768-1848")+ ylab ("Total Established")
 
+
+type <- ggplot(schol_soc_geocoded, aes (x=Society))
+type+ geom_histogram() + theme(axis.text.x = element_text(face = "bold", angle = 60, hjust = 1, size = 8)) +ggtitle("Learned Societies by Type") + ylab("Total Established") + xlab ("Type of Society")
+
+typedate <- ggplot(schol_soc_geocoded, aes (x=Date.Established, fill=Society))
+typedate+ geom_histogram(position= "dodge", binwidth= 10) + theme(axis.text.x = element_text(face = "bold", angle = 60, hjust = 1, size = 8)) +ggtitle("Learned Societies by Date Established") + ylab("Total Established") + xlab ("Year Established")
+
+year <- ggplot(socdata, aes(x=Year.Elected, fill= Organization ))
+year + geom_histogram(position = "dodge", binwidth = 1) +
+ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected")
+
 #Create a graph of those Cesation.of.Society
+
+
 
 ```
 
@@ -227,7 +238,6 @@ ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_
 ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=early_colleges_geocoded, size=4, aes (x=lon, y=lat, color=period, shape=period) ) + coord_map() +ggtitle ('Early American Colleges by Period')
 
 
-ggtitle(Early American Colleges by Period)
 
 m <- ggplot(networkdata, aes(x=Organization))
 m + geom_histogram()
