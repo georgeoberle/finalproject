@@ -13,6 +13,15 @@ data = read.csv("~/CLIO-3/finalproject/networtest.csv")
 # data
 ```
 
+```{r}
+nusoc <- ggplot(data, aes(x=Organization, fill= Member ))
+nusoc + geom_histogram(position = "dodge", binwidth = 1) +
+  theme(axis.text.x = element_text(face = "bold", angle = 60, hjust = 1, size = 8))
+ggtitle("Total Members Columbian College Network") + ylab("Total Members Elected")
+  
+```
+
+
 
 ```{r}
 data_g <- graph.data.frame(data, directed = FALSE)
