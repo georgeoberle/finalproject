@@ -187,6 +187,10 @@ ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_
 
 ```
 
+```{r}
+
+
+```
 
 
 
@@ -256,8 +260,6 @@ ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_
 m <- ggplot(networkdata, aes(x=Organization))
 m + geom_histogram()
 
-l <- ggplot(early_colleges_geocoded, aes(x=state))
-l + geom_histogram()
 
                               
 ```
@@ -269,6 +271,12 @@ colleges + geom_histogram()+ ggtitle ("Early American Colleges Established by St
 
 collegesperiods <- ggplot (early_colleges_geocoded, aes(x=period))
 collegesperiods + geom_histogram()+ ggtitle ("Early American Colleges Established by Periods 1768-1848")+ ylab ("Total Established")+xlab ("State")
+
+
+early_colleges_geocoded <- read.csv("early_colleges_geocoded.csv")
+l <- ggplot(early_colleges_geocoded, aes(x=state, fill=type))
+l + geom_histogram (position = "dodge", binwidth = 1)+ xlab("State Founded")+ggtitle ("Early American Colleges by Sponsorship")
+
 
 
 
