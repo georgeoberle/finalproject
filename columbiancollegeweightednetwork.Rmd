@@ -36,7 +36,12 @@ year <- ggplot(socdata, aes(x=Year.Elected, fill= Organization ))
 year + geom_histogram(position = "dodge", binwidth = 1) +
 ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected") + xlab("Year Elected")+facet_wrap("Year.Elected")
 
-
+socdata %>%
+  group_by(Year.Elected, Organization) %>%
+  summarize(n = n())  %>% 
+  ggplot(aes(x=Year.Elected, y= n, color = Organization )) +
+  geom_line() +
+ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected") + xlab("Year Elected")
 
 #How do I label the total number?
 
@@ -77,6 +82,30 @@ a + geom_bar(position = "dodge", binwidth = 1)+ xlab("Year Elected")+ggtitle ("A
 #This doesn't really help with what I am looking for. What I really want is the numbers of common members of the APS and AAAS
 data_g <- graph.data.frame(socdata, directed = FALSE)
 plot (data_g, vertex.label = NA)
+
+#State of socities before 1800 filter by Date.Elected
+socdata %>%
+  filter(Year.Elected < 1800) %>%
+  graph.data.frame(directed = FALSE) %>%
+  plot(vertex.label = NA)
+
+#Lincoln's example
+test <- data_frame(people = c(1, 2, 3, 4, 5, 1, 2, 3, 3, 4, 5),
+                   orgs = c("A", "A", "A", "A", "A", "B", "B", "B", "C", "C", "C"))
+z <- graph.data.frame(test)
+adj <- get.adjacency(z, sparse = FALSE)
+adj
+adj_simple <- adj[rownames(adj) %in% test$people, colnames(adj) %in% test$orgs]
+adj_simple
+as.data.frame(adj_simple)
+
+#My Application of Example
+newsocdata <-graph.data.frame(socdata)
+apsaaas<- get.adjacency(newsocdata, sparse= FALSE)
+apsaaas <- apsaaas[rownames(apsaaas) %in% socdata$Name, colnames(apsaaas) %in% socdata$Organization]
+
+# Query membership for a particular person
+apsaaas[rownames(apsaaas) == "John Adams", ]
 
 #Bipartite map of APS and AAAS
 V(data_g)
@@ -153,6 +182,7 @@ mutate(location=paste (City, State))
 location_geocoded <- geocode(schol_soc$location)
 schol_soc_geocoded <- cbind(schol_soc, location_geocoded)
 schol_soc_geocoded
+write.csv(schol_soc_geocoded, file = "shol-soc-geocoded.csv")
 
 
 #Needed steps to get 1830 and 1840 maps ready
