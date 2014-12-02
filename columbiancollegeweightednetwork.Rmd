@@ -36,6 +36,8 @@ year <- ggplot(socdata, aes(x=Year.Elected, fill= Organization ))
 year + geom_histogram(position = "dodge", binwidth = 1) +
 ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected") + xlab("Year Elected")+facet_wrap("Year.Elected")
 
+
+
 #How do I label the total number?
 
 dataaps <-read.csv("~/CLIO-3/apsmembership.csv")
@@ -51,6 +53,9 @@ a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
 
 a <- ggplot(dataaps, aes(x=Year.Elected, fill=Residency))
 a + geom_bar(position = "dodge", binwidth = 1)+ xlab("Year Elected")+ggtitle ("Annual Elected Members APS by Residency")
+
+a <- ggplot(dataaps, aes(x=Year.Elected, fill=Residency))
+a + geom_bar(position = "dodge", binwidth = 1)+ xlab("Year Elected")+ggtitle ("Annual Elected Members APS by Residency")+facet_wrap("Year.Elected")
 
 
 # adjust width not needed for this one. Also adjusts other aethetics. Not needed.
