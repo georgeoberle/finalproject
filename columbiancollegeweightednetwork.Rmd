@@ -29,7 +29,13 @@ socdata = read.csv ("~/CLIO-3/finalproject/APSAAAScombined.csv")
 
 year <- ggplot(socdata, aes(x=Year.Elected, fill= Organization ))
 year + geom_histogram(position = "dodge", binwidth = 1) +
-ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected")
+ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected") + xlab("Year Elected")
+  
+year <- ggplot(socdata, aes(x=Year.Elected, fill= Organization ))
+year + geom_histogram(position = "dodge", binwidth = 1) +
+ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected") + xlab("Year Elected")+facet_wrap("Year.Elected")
+
+#How do I label the total number?
 
 dataaps <-read.csv("~/CLIO-3/apsmembership.csv")
 a <- ggplot(dataaps, aes(x=Year.Elected))
