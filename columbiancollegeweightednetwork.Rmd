@@ -1,0 +1,265 @@
+---
+title: "Learned Societies in the Early Republic"
+author: "George Oberle"
+date: "November 23, 2014"
+output: html_document
+---
+
+```{r}
+#Set tools
+library (sp)
+library (rgdal)
+library (rgeos)
+library (maptools)
+library (ggmap)
+library (ggplot2)
+library (mullenMisc)
+library (magrittr)
+library (stringr)
+library (dplyr)
+#library (classInt) Get help
+library (RColorBrewer)
+library (igraph)
+setwd("~/CLIO-3/finalproject")
+```
+
+```{r}
+#This is helpful showing the annual membership of the APS and the AAAS. It shows patterns of growth of the members.
+socdata = read.csv ("~/CLIO-3/finalproject/APSAAAScombined.csv")
+
+year <- ggplot(socdata, aes(x=Year.Elected, fill= Organization ))
+year + geom_histogram(position = "dodge", binwidth = 1) +
+ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected")
+
+dataaps <-read.csv("~/CLIO-3/apsmembership.csv")
+a <- ggplot(dataaps, aes(x=Year.Elected))
+a + geom_histogram(binwidth = 1)+ xlab("Year Elected")+ggtitle ("Annual Elected Members APS")
+
+#APS Resident and International Members
+a <- ggplot(dataaps, aes(Residency))
+a + geom_bar()
+a + geom_bar(width=.5)
+a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
+#a + geom_bar(fill="white", colour="darkgreen")
+
+a <- ggplot(dataaps, aes(x=Year.Elected, fill=Residency))
+a + geom_bar(position = "dodge", binwidth = 1)+ xlab("Year Elected")+ggtitle ("Annual Elected Members APS by Residency")
+
+
+# adjust width not needed for this one. Also adjusts other aethetics. Not needed.
+#a + geom_bar(width=.5)
+#a + geom_bar(fill="darkgreen", color="darkgreen") + coord_flip()
+#a + geom_bar(fill="white", colour="darkgreen")
+
+
+
+#Density-I am not sure if this is a helpful visualization. 
+#ggplot(socdata, aes(x=Year.Elected, fill=factor(Organization))) + geom_density()
+
+```
+
+
+
+
+```{r}
+#This doesn't really help with what I am looking for. What I really want is the numbers of common members of the APS and AAAS
+data_g <- graph.data.frame(socdata, directed = FALSE)
+plot (data_g, vertex.label = NA)
+
+#Bipartite map of APS and AAAS
+V(data_g)
+bipartite.mapping(data_g)
+V(data_g)$type <- bipartite.mapping(data_g)$type
+is.bipartite(data_g)
+plot(data_g, layout = layout.bipartite, vertex.label = NA)
+title("A bipartite layout of the APS and AAAS")
+
+bipartite <- bipartite.projection(data_g)
+str(bipartite)
+plot(bipartite$proj1, vertex.label = NA)
+title("Just the people in the network")
+
+plot(bipartite$proj2)
+title("AAAS and APS")
+
+E(bipartite$proj2)
+E(bipartite$proj2)$weight
+
+plot(bipartite$proj2, edge.width = E(bipartite$proj2)$weight)
+```
+
+```{r}
+#This shows my full networks.
+data = read.csv("~/CLIO-3/finalproject/learnedmembersnetwork.csv")
+
+data_h <- graph.data.frame(data, directed = FALSE)
+plot (data_h, vertex.label = NA)
+title("A Network Graph of the Societies Involved in the National University")
+
+V(data_h)
+bipartite.mapping(data_h)
+V(data_h)$type <- bipartite.mapping(data_h)$type
+is.bipartite(data_h)
+plot(data_h, layout = layout.bipartite, vertex.label = NA)
+title("A bipartite layout of National University Societies")
+
+bipartite_full <- bipartite.projection(data_h)
+str(bipartite_full)
+#Error in nchar(vn) : invalid multibyte string 69
+plot(bipartite$proj1, vertex.label = NA)
+title("Just the people in the Columbian College network")
+check with Lincoln. Not really working.
+
+plot(bipartite_full$proj2)
+title("The Columbian College Network")
+
+E(bipartite_full$proj2)
+E(bipartite_full$proj2)$weight
+
+plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight)
+title("Fraternal Organizations Weighted by Shared Membership")
+
+plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight,
+     layout = layout.fruchterman.reingold(bipartite_full$proj2, 
+                                          weights = E(bipartite_full$proj2)$weight),
+     vertex.label.dist = .5)
+title("Columbian College Associations Weighted by Shared Membership")
+
+#Would it be useful to show the APS and AAAS as a root?
+plot(bipartite_full$proj2, edge.width = E(bipartite_full$proj2)$weight,
+     layout.reingold.tilford()
+title("APS Root")
+```
+
+
+
+```{r}
+#Maps-Scholarly Societies Begin
+schol_soc <- read.csv("~/CLIO-3/finalproject/Scholarly Societies.csv")       
+schol_soc<- schol_soc%>%
+mutate(location=paste (City, State))
+location_geocoded <- geocode(schol_soc$location)
+schol_soc_geocoded <- cbind(schol_soc, location_geocoded)
+schol_soc_geocoded
+
+
+#Needed steps to get 1830 and 1840 maps ready
+map_sp <- readOGR("nhgis-shp/", "state_1830")
+class(map_sp)
+str(map_sp, max.level = 2)
+map_sp@bbox
+map_sp@proj4string
+head(map_sp@data)
+plot(map_sp)
+
+
+map1830<- readOGR ("nhgis-shp" , "state_1830")
+map1840<- readOGR ("nhgis-shp" , "state_1840")
+
+fort<- fortify (map1830)
+fort2<- fortify (map1840)
+
+```
+
+
+```{r}
+#Maps of Learned Societies
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=schol_soc_geocoded, aes (x=lon, y=lat), color="red") + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="light grey") +geom_point(data=schol_soc_geocoded, size= 3, aes (x=lon, y=lat), color="blue") + coord_map()
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=schol_soc_geocoded, aes (x=lon, y=lat, color=factor(Date.Established)) ) + coord_map()
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=schol_soc_geocoded, size=3, aes (x=lon, y=lat, color=Society) ) + coord_map() +ggtitle('Early American Learned Societies by Type')
+
+```
+
+
+
+
+```{r}
+#data scholarly societies and colleges geocoded
+early_learned <- read.csv("Scholarly Societies.csv")
+early_colleges_geocoded <- read.csv("early_colleges_geocoded.csv")
+
+#These are the processes to use to add columns for geocoded.
+early_learned<- early_learned%>%
+mutate(location=paste (City, State))
+location_geocoded <- geocode(early_learned$location)
+early_learned_geocoded <- cbind(early_learned, location_geocoded)
+early_learned_geocoded
+#How do I save this to the file?
+
+#Histogram of Total Learned Societies Established 1768-1848 by state.
+#Date Established for Early Learned Societies
+t <- ggplot(schol_soc_geocoded, aes(x=Date.Established))
+t + geom_histogram()
+t + geom_histogram(binwidth = 3)
+
+u <- ggplot (schol_soc_geocoded, aes(x=State))
+u + geom_histogram()
+u + geom_histogram() + ggtitle ("Learned Socities Established by State 1768-1848")+ ylab ("Total Established")
+
+
+type <- ggplot(schol_soc_geocoded, aes (x=Society))
+type+ geom_histogram() + theme(axis.text.x = element_text(face = "bold", angle = 60, hjust = 1, size = 8)) +ggtitle("Learned Societies by Type") + ylab("Total Established") + xlab ("Type of Society")
+
+typedate <- ggplot(schol_soc_geocoded, aes (x=Date.Established, fill=Society))
+typedate+ geom_histogram(position= "dodge", binwidth= 10) + theme(axis.text.x = element_text(face = "bold", angle = 60, hjust = 1, size = 8)) +ggtitle("Learned Societies by Date Established") + ylab("Total Established") + xlab ("Year Established")
+
+year <- ggplot(socdata, aes(x=Year.Elected, fill= Organization ))
+year + geom_histogram(position = "dodge", binwidth = 1) +
+ggtitle("Annual Elected Members of APS and AAAS") + ylab("Total Members Elected")
+
+#Create a graph of those Cesation.of.Society
+
+
+
+```
+
+```{r}
+#early_colleges_geocoded <- early_colleges_geocoded %>%
+ # mutate(period = periodize(established))
+
+early_colleges_geocoded <- read.csv("early_colleges_geocoded.csv")
+
+#Early Colleges on 1830 Map
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat), color="red") + coord_map()
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(established)) ) + coord_map()
+
+ggplot () + geom_map(data=fort, map=fort, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(period)) ) + coord_map()
+
+#Early Colleges on 1840 map
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat), color="red") + coord_map() +ggtitle('Early American Colleges on 1840 Map')
+
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="black", fill="white") +geom_point(data=early_colleges_geocoded, aes (x=lon, y=lat, color=factor(established)) ) + coord_map()
+
+#This is the better one for colleges.
+ggplot () + geom_map(data=fort2, map=fort2, aes(x=long, y=lat, group=group, map_id=id), color="grey", fill="white") +geom_point(data=early_colleges_geocoded, size=4, aes (x=lon, y=lat, color=period, shape=period) ) + coord_map() +ggtitle ('Early American Colleges by Period')
+
+
+
+m <- ggplot(networkdata, aes(x=Organization))
+m + geom_histogram()
+
+l <- ggplot(early_colleges_geocoded, aes(x=state))
+l + geom_histogram()
+
+                              
+```
+
+```{r}
+#Colleges Histograms
+colleges <- ggplot (early_colleges_geocoded, aes(x=state))
+colleges + geom_histogram()+ ggtitle ("Early American Colleges Established by State 1768-1848")+ ylab ("Total Established")+xlab ("State")
+
+collegesperiods <- ggplot (early_colleges_geocoded, aes(x=period))
+collegesperiods + geom_histogram()+ ggtitle ("Early American Colleges Established by Periods 1768-1848")+ ylab ("Total Established")+xlab ("State")
+
+
+
+
+```
+
